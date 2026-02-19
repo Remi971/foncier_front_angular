@@ -1,0 +1,16 @@
+<div class="flex flex-col items-center h-screen w-full justify-center gap-6">
+    <h1 class="text-2xl font-black">Login</h1>
+    <div class="w-full max-w-100">
+        <form #loginform="ngForm" (ngSubmit)="login(loginform)" class="flex flex-col gap-4 w-full p-4">
+            <div class="flex flex-col gap-2">
+                <label class="font-bold" for="username">Email:</label>
+                <input class="p-2 border rounded-sm" id="username" type="username" [(ngModel)]="username" name="username" required>
+            </div>
+            <div class="flex flex-col gap-2">
+                <label class="font-bold"  for="password">Password:</label>
+                <input class="p-2 border rounded-sm" id="password" type="password" [(ngModel)]="password" name="password" required>
+            </div>
+            <button class="cursor-pointer hover:bg-gray-400 p-2 rounded-sm border border-gray-400" mat-raised-button color="primary" type="submit">Valider</button>
+        </form>
+    </div>
+</div>
