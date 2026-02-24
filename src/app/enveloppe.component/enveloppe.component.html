@@ -1,0 +1,12 @@
+<div class="flex flex-col items-center gap-2 p-2 w-full">
+    <h1 class="text-center font-bold text-xl">Enveloppe</h1>
+    <button class="border border-green-800 rounded-sm p-2 cursor-pointer hover:bg-green-400" (click)="removeEnveloppe()">Remove Enveloppe</button>
+    <button class="border border-green-800 rounded-sm p-2 cursor-pointer hover:bg-green-400" (click)="addEnveloppe()">Add Enveloppe</button>
+    @if (this.editEnveloppeActive) {
+        <button class="border border-green-800 rounded-sm p-2 cursor-pointer hover:bg-green-400" (click)="cancelEditEnveloppe()">Cancel Enveloppe</button>
+        <button class="border border-green-800 rounded-sm p-2 cursor-pointer hover:bg-green-400" (click)="saveEnveloppe()">Save Enveloppe</button>
+    } @else {
+        <button class="border border-green-800 rounded-sm p-2 cursor-pointer hover:bg-green-400" (click)="editEnveloppe()">Edit Enveloppe</button>
+    }
+</div>
+

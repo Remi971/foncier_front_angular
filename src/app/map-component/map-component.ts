@@ -1,5 +1,5 @@
 import { Component, effect, inject, OnInit } from '@angular/core';
-import { Map, StyleSpecification } from 'maplibre-gl';
+import { Feature, Map, StyleSpecification } from 'maplibre-gl';
 import { GeoJsonImportFeature, Geoman, type GmOptionsPartial } from "@geoman-io/maplibre-geoman-free";
 import 'maplibre-gl/dist/maplibre-gl.css';
 import "@geoman-io/maplibre-geoman-free/dist/maplibre-geoman.css";
@@ -9,7 +9,9 @@ import { TokenService } from '../../services/token.service';
 import { Router } from '@angular/router';
 import { MapService } from '../../services/map.service';
 import { MapAction } from '../dto/mapAction.enum';
-
+import { EnveloppeDto } from '../dto/enveloppe.dto';
+import { DataFormatDto } from '../dto/dataFormat.dto';
+import * as turf from '@turf/turf'
 @Component({
   selector: 'app-map-component',
   imports: [],
@@ -171,8 +173,9 @@ export class MapComponent implements OnInit {
               'line-width': 2
             }
           })
+          const center = turf.centroid(data.data.features[0]).geometry.coordinates
           this.map!.flyTo({
-            center: [4.9010, 44.1169], // starting position [lng, lat]
+            center: [center[0], center[1]], //[4.9010, 44.1169], // starting position [lng, lat]
             zoom: 12,
             curve: 1,
             speed: 1,
@@ -196,23 +199,29 @@ export class MapComponent implements OnInit {
   saveEnveloppe(): void {
     const newEnveloppe = this.geoman?.features.exportGeoJson();
     this.removeEnveloppeFromMap();
-    this.map!.addSource('enveloppe', {
-      type: 'geojson',
-      data: newEnveloppe!.features[0],
-    })
-    this.map!.addLayer({
-      id: "enveloppe",
-      type: 'line',
-      source: 'enveloppe',
-      paint: {
-        'line-color': 'red',
-        'line-width': 2
+    const newEnveloppeData : DataFormatDto = {
+      type: "enveloppe",
+      data: JSON.stringify(newEnveloppe!),
+    }
+    this.cartoApi.saveEnveloppe(newEnveloppeData).subscribe(
+      (response) => {
+        this.map!.addSource('enveloppe', {
+          type: 'geojson',
+          data: newEnveloppe!.features[0],
+        })
+        this.map!.addLayer({
+          id: "enveloppe",
+          type: 'line',
+          source: 'enveloppe',
+          paint: {
+            'line-color': 'red',
+            'line-width': 2
+          }
+        })
+        this.geoman?.destroy();
+        this.geoman = null;
       }
-    })
-    this.geoman?.destroy();
-    this.geoman = null;
-    // Save to database 
-    console.log("New enveloppe to save:", newEnveloppe);
+    )
   }
 
   cancelEditEnveloppe(): void {

@@ -1,16 +1,26 @@
 <div class="flex flex-col items-center h-screen w-full justify-center gap-6">
     <h1 class="text-2xl font-black">Login</h1>
     <div class="w-full max-w-100">
-        <form #loginform="ngForm" (ngSubmit)="login(loginform)" class="flex flex-col gap-4 w-full p-4">
+        <form [formGroup]="form" (ngSubmit)="login()" class="flex flex-col gap-4 w-full p-4">
             <div class="flex flex-col gap-2">
+                @let usernameForm = form.controls['username'];
                 <label class="font-bold" for="username">Email:</label>
-                <input class="p-2 border rounded-sm" id="username" type="username" [(ngModel)]="username" name="username" required>
+                <input class="p-2 border rounded-sm" id="username" type="text" formControlName="username" required>
+                @if (usernameForm.invalid && usernameForm.touched) {
+                    <div><p class="text-red-500 ">Email invalid</p></div>
+                }
             </div>
             <div class="flex flex-col gap-2">
                 <label class="font-bold"  for="password">Password:</label>
-                <input class="p-2 border rounded-sm" id="password" type="password" [(ngModel)]="password" name="password" required>
+                <input class="p-2 border rounded-sm" id="password" type="password" formControlName="password" required>
             </div>
-            <button class="cursor-pointer hover:bg-gray-400 p-2 rounded-sm border border-gray-400" mat-raised-button color="primary" type="submit">Valider</button>
+            <button class="cursor-pointer hover:bg-gray-400 p-2 rounded-sm border border-gray-400 disabled:cursor-not-allowed" mat-raised-button color="primary" type="submit" [disabled]="!form.valid">Valider</button>
         </form>
+        <p class="p-4 text-center">
+            Vous n'avez pas encore de compte? 
+        </p>
+        <div class="w-full flex justify-center">
+            <a class="underline cursor-pointer border border-transparent rounded-md hover:bg-green-700 hover:text-white p-1 transition-all" routerLink="/signin">S'inscrire</a>
+        </div>
     </div>
 </div>

@@ -1,24 +1,34 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { TokenService } from '../../services/token.service';
-import { FormsModule, NgForm } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { catchError, tap } from 'rxjs';
-import { Router } from '@angular/router';
-import { LoginDto } from '../dto/login.dto';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-login.component',
-  imports: [FormsModule],
+  imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   tokenService = inject(TokenService)
   router = inject(Router)
-  username: string = "";
-  password: string = "";
+  formBuilder = inject(FormBuilder)
+  form!: FormGroup;
 
-  login(ngform: NgForm):void {
-    this.tokenService.login(ngform).pipe(
+  ngOnInit(): void {
+    // this.form = this.formBuilder.group({
+    //   username: [null, [Validators.required, Validators.email]],
+    //   password: [null, [Validators.required]]
+    // })
+    this.form = new FormGroup({
+      username: new FormControl(null, [Validators.required, Validators.email]),
+      password: new FormControl(null, [Validators.required])
+    })
+  }
+
+  login():void {
+    this.tokenService.login(this.form).pipe(
       tap(() => this.router.navigate(['/'])),
       catchError(err => {
         alert('Login failed: ' + err.message || 'Unknown error');

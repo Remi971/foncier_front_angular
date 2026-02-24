@@ -8,7 +8,6 @@ export function tokenInterceptor(req: HttpRequest<any>, next: HttpHandlerFn): Ob
     const tokenService = inject(TokenService)
     const token = tokenService.getToken();
     const router = inject(Router)
-    console.log("token : ", token)
     if (token) {
         // check expiration
         if (tokenService.isTokenExpired(token)) {
