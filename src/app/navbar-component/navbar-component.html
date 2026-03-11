@@ -1,0 +1,54 @@
+<div class="w-full rounded-xl box-shadow p-4 flex items-center justify-between gap-4">
+  <div class="flex items-center justify-between w-full">
+    <ul class="menu menu-horizontal gap-2">
+      <li><a ariaCurrentWhenActive="page" routerLinkActive="active" routerLink="/home">Home</a></li>
+      <li ><a ariaCurrentWhenActive="page" routerLinkActive="active" routerLink="/enveloppe">Enveloppe</a></li>
+      <li><a ariaCurrentWhenActive="page" routerLinkActive="active"  routerLink="/potentiel">Potentiel</a></li>
+      <li><a ariaCurrentWhenActive="page" routerLinkActive="active" routerLink="/dashboard">Dashboard</a></li>
+    </ul>
+    <div class="relative flex justify-end ">
+      <label class="input" name="communeName">
+        <svg class="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <g
+            stroke-linejoin="round"
+            stroke-linecap="round"
+            stroke-width="2.5"
+            fill="none"
+            stroke="currentColor"
+          >
+            <circle cx="11" cy="11" r="8"></circle>
+            <path d="m21 21-4.3-4.3"></path>
+          </g>
+        </svg>
+        <div class="flex justify-between w-full">
+          <input
+          class="w-full"
+            name="communeName"
+            type="text"
+            placeholder="Search"
+            (keyup)="updateField($event)"
+            [(ngModel)]="communeInput"
+          />
+          @if (communeInput) {
+            <button class="pr-2 cursor-pointer" (click)="clearInput()">X</button>
+          }
+        </div>
+      </label>
+      @if (communeList.length) {
+        <ul
+          class="absolute w-full top-12 bg-base-100 rounded-box z-1 p-2 shadow-sm flex flex-col gap-2"
+        >
+          @for (commune of communeList; track commune.code) {
+            <li
+              class="w-full flex flex-col hover:bg-secondary p-1 cursor-pointer rounded-sm"
+              (click)="selectCommune(commune)"
+            >
+              <span class="text-left w-full text-sm text-gray-900">{{ commune.nom }}</span>
+              <span class="text-right w-full text-sm text-gray-500">{{ commune.code }}</span>
+            </li>
+          }
+        </ul>
+      }
+    </div>
+  </div>
+</div>

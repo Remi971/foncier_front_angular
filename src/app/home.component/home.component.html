@@ -1,1 +1,12 @@
-<p>home.component works!</p>
+  <div class="w-full flex flex-col items-center p-2">
+    @if (mapService.communeSaved()) {
+      <div class="p-4 w-full flex flex-col items-center gap-4">
+        <h1 class="text-xl font-bold">{{ mapService.communeSaved()?.nom }}</h1>
+        @if (!mapService.communeSaved()?.data){
+          <button class="btn btn-wide btn-primary text-white" (click)="downloadDataCommune()">Obtenir les données</button>
+        } @else {
+          <p>La données est présente dans le DataLake</p>
+        }
+      </div>
+    }
+  </div>

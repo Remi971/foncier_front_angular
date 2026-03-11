@@ -1,3 +1,14 @@
-/* You can add global styles to this file, and also import other style files */
-
 @import "tailwindcss";
+@plugin "daisyui" {
+    themes: light --default, dark --prefersdark, lemonade;
+}
+
+.box-shadow {
+    box-shadow: 0px 0px 5px 5px #e1e1e1; 
+}
+
+.icon {
+    width: 1rem;
+    height: 1rem;
+    fill: white;
+}

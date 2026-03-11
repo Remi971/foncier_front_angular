@@ -6,7 +6,7 @@ export const authGuard: CanActivateFn = (route, state) => {
   const tokenService = inject(TokenService);
   const router = inject(Router)
   if (!tokenService.isAuthenticated()) {
-    const loginPath = router.parseUrl('/login');
+    const loginPath = router.parseUrl('/auth/login');
     return new RedirectCommand(loginPath);
   }
   return true;

@@ -1,5 +1,5 @@
 import { Component, effect, inject, OnInit } from '@angular/core';
-import { Feature, Map, StyleSpecification } from 'maplibre-gl';
+import { Feature, LngLat, LngLatLike, Map, StyleSpecification } from 'maplibre-gl';
 import { GeoJsonImportFeature, Geoman, type GmOptionsPartial } from "@geoman-io/maplibre-geoman-free";
 import 'maplibre-gl/dist/maplibre-gl.css';
 import "@geoman-io/maplibre-geoman-free/dist/maplibre-geoman.css";
@@ -78,8 +78,16 @@ export class MapComponent implements OnInit {
         case MapAction.REMOVE_POTENTIEL:
           this.removePotentielFromMap();
           break;
+        // case MapAction.FLY_TO:
+        //   this.flyToPoint();
+        //   break
         default:
           console.warn("Unknown map action received: ", this.mapService.getAction())
+      }
+    })
+    effect(() => {
+      if (this.mapService.communeSaved()) {
+        this.flyToPoint()
       }
     })
   }
@@ -142,6 +150,15 @@ export class MapComponent implements OnInit {
     })
   }
 
+  flyToPoint(): void {
+    this.map?.flyTo({
+      center: this.mapService.communeSaved()!.centre.coordinates as LngLatLike,
+      zoom: 11,
+      curve: 1,
+      speed: 1
+    })
+  }
+
   getEnveloppeToMap(): void {
     if (this.map?.getLayer('enveloppe')) {
       this.map.addLayer({
@@ -159,6 +176,7 @@ export class MapComponent implements OnInit {
       tap((data) => {
         if (data) {
           console.log("Adding source enveloppe to map", data)
+          this.mapService.requestEnveloppe(true)
           this.enveloppe = data.data.features[0];
           this.map!.addSource('enveloppe', {
             type: 'geojson',
@@ -183,6 +201,7 @@ export class MapComponent implements OnInit {
           })
         } else {
           this.mapService.requestAction(MapAction.NO_PROCESS_DATA)
+          this.mapService.requestEnveloppe(false)
         }
       })).subscribe()
   }

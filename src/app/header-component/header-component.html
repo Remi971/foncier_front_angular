@@ -1,0 +1,83 @@
+<nav class="w-screen flex items-center justify-between p-4">
+  <div class="flex items-center gap-4">
+    <div
+      class="w-10 h-10 rounded-full border bg-primary text-white flex justify-center items-center"
+    >
+      C
+    </div>
+    <div class="flex flex-col">
+      <span class="text-lg font-bold">CARTOFONCIER</span>
+      <span class="text-md font-light">Identifiez le potentiel de votre commune</span>
+    </div>
+  </div>
+  <div class="flex items-center justify-center gap-4">
+    <div class="drawer drawer-end">
+      <input id="my-drawer-5" type="checkbox" class="drawer-toggle" />
+      <div class="drawer-content flex justify-center items-center">
+        <!-- Page content here -->
+        <label for="my-drawer-5" class="drawer-button cursor-pointer">
+          <input id="my-drawer-5" type="checkbox" class="drawer-toggle" />
+          <div class="indicator">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+              />
+            </svg>
+            <span class="badge badge-xs badge-primary indicator-item"></span>
+          </div>
+        </label>
+      </div>
+      <div class="drawer-side">
+        <label for="my-drawer-5" aria-label="close sidebar" class="drawer-overlay"></label>
+        <ul class="menu bg-base-200 min-h-full w-80 p-4">
+          <!-- Sidebar content here -->
+          <li><a>Sidebar Item 1</a></li>
+          <li><a>Sidebar Item 2</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="flex items-center gap-4">
+      <div class="dropdown">
+        <div
+          tabindex="0"
+          role="button"
+          class="cursor-pointer flex gap-4 items-center hover:bg-neutral-100 py-1 pr-2 rounded-box"
+        >
+          @if (!user()) {
+            <div class="avatar avatar-placeholder">
+              <div class="bg-neutral text-neutral-content w-8 rounded-full skeleton">
+              </div>
+            </div>
+            <div class="md:flex items-center gap-1">
+              <span class="skeleton h-4 w-10"></span
+              ><span class="skeleton h-4 w-14"></span>
+            </div>
+          } @else {
+            <div class="avatar avatar-placeholder">
+              <div class="bg-neutral text-neutral-content w-8 rounded-full">
+                <span class="text-xs">{{ user().firstname.charAt(0).toUpperCase() + user().lastname.charAt(0).toUpperCase() }}</span>
+              </div>
+            </div>
+            <div class="md:flex items-center gap-1">
+              <span>{{ user().firstname }}</span
+              ><span> {{ user().lastname }}</span>
+            </div>
+          }
+        </div>
+        <ul class="dropdown-content menu bg-base-100 rounded-box w-full z-1 p-2 shadow-sm">
+          <li class="p-1 cursor-pointer"><a routerLink="/profile">Compte</a></li>
+          <li class="p-1 cursor-pointer"><a routerLink="/auth/login">Logout</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</nav>

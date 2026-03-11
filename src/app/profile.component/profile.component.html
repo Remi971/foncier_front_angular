@@ -1,14 +1,16 @@
-@if (isLoggedIn) {
-    <div>
-      <h2>Bienvenue, {{ user()?.id }}!</h2>
-      @if (user()?.email) {
-        <p>Email: {{ user()?.email }}</p>
-      }
-      <button class="p-2 border border-green-200 hover:bg-green-700 hover:text-white transition-all cursor-pointer" (click)="logout()">Déconnexion</button>
-    </div>
-} @else {
-    <div>
-      <p>Veuillez vous connecter.</p>
-      <a class="cursor-pointer" mat-raised-button color="primary" routerLink="/login">Se connecter</a>
-    </div>
-}
+<div class="w-screen h-screen flex items-center justify-center">
+  @if (isLoggedIn) {
+      <div>
+        <h2>Bienvenue, {{ user()?.id }}!</h2>
+        @if (user()?.email) {
+          <p>Email: {{ user()?.email }}</p>
+        }
+        <button class="p-2 border border-green-200 hover:bg-green-700 hover:text-white transition-all cursor-pointer" (click)="logout()">Déconnexion</button>
+      </div>
+  } @else {
+      <div>
+        <p>Veuillez vous connecter.</p>
+        <a class="cursor-pointer" mat-raised-button color="primary" routerLink="/auth/login">Se connecter</a>
+      </div>
+  }
+</div>

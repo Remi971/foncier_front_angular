@@ -13,6 +13,7 @@ import { TokenDto } from "../app/dto/token.dto";
 })
 export class TokenService {
     private TOKEN_KEY = 'accessToken';
+    private REFRESH_KEY = "refreshToken"
     private token = signal<string | null>(null);
     private refreshToken = signal<string | null>(null);
     private _user = signal<UserDto | null>(null);
@@ -21,7 +22,7 @@ export class TokenService {
 
     constructor(
         private http: HttpClient,
-        private cartoApiService : CartoApiService
+        private cartoApiService: CartoApiService
     ) {
         effect(() => {
             if (this.token()) {
@@ -30,18 +31,26 @@ export class TokenService {
                 sessionStorage.removeItem(this.TOKEN_KEY);
             }
         });
+        effect(() => {
+            if (this.refreshToken()) {
+                sessionStorage.setItem(this.REFRESH_KEY, this.refreshToken()!);
+            } else {
+                sessionStorage.removeItem(this.REFRESH_KEY);
+            }
+        });
         // Charger le token au démarrage
         this.token.set(sessionStorage.getItem(this.TOKEN_KEY));
+        this.refreshToken.set(sessionStorage.getItem(this.REFRESH_KEY))
     }
 
     login(payload: FormGroup): Observable<TokenDto> {
         const body = new URLSearchParams();
         body.set('username', payload.value.username);
-        body.set('password', payload.value.password); 
+        body.set('password', payload.value.password);
         return this.http.post<TokenDto>(
-            environment.apiUrl + '/token', 
-            body.toString(), 
-            {headers: { "Content-Type": "application/x-www-form-urlencoded" }}
+            environment.apiUrl + '/token',
+            body.toString(),
+            { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
         ).pipe(
             tap(response => {
                 this.token.set(response.access_token);
@@ -57,24 +66,24 @@ export class TokenService {
         body.set("firstname", payload.value.firstname)
         body.set("lastname", payload.value.lastname)
         return this.http.post<TokenDto>(
-            environment.apiUrl + '/signin', 
-            body.toString(), 
-            {headers: {"Content-type": "application/x-www-form-urlencoded"}})
-        .pipe(
-            tap(response => {
-                this.token.set(response.access_token)
-                this.refreshToken.set(response.refresh_token)
-            })
-        )
+            environment.apiUrl + '/signin',
+            body.toString(),
+            { headers: { "Content-type": "application/x-www-form-urlencoded" } })
+            .pipe(
+                tap(response => {
+                    this.token.set(response.access_token)
+                    this.refreshToken.set(response.refresh_token)
+                })
+            )
     }
- 
+
     logout(): void {
         this.token.set(null);
         this._user.set(null);
     }
 
     refresh_token(): Observable<TokenDto> {
-        return this.http.post<TokenDto>(environment.apiUrl + '/refresh_token', {headers: { "Authorization": `Bearer ${this.refreshToken}`}}).pipe(
+        return this.http.post<TokenDto>(environment.apiUrl + '/refresh_token', { headers: { "Authorization": `Bearer ${this.refreshToken}` } }).pipe(
             tap(response => {
                 this.token.set(response.access_token);
                 this.refreshToken.set(response.refresh_token);
@@ -82,7 +91,7 @@ export class TokenService {
         )
     }
 
-    getToken(): string | null{
+    getToken(): string | null {
         return this.token() || null
     }
 
@@ -90,9 +99,14 @@ export class TokenService {
         if (this.token()) {
             const exp = this.parseJwt(this.token()!).exp
             const count = Math.floor(exp - Date.now() / 1000)
-            if (count <= 0) {
+            // console.log("expirationTokenCount : ", count)
+            if (count <= 1) {
                 console.log("REFRESH TOKEN !!!!")
                 return this.refresh_token().pipe(
+                    tap((response) => {
+                        this.token.set(response.access_token)
+                        this.refreshToken.set(response.refresh_token)
+                    }),
                     catchError((error) => {
                         console.log(error)
                         this.logout()
@@ -104,21 +118,20 @@ export class TokenService {
         return null
     }
 
-    parseJwt(token: string): {exp: number} {
-    var base64Url = token.split('.')[1]
-    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/')
-    var jsonPayload = decodeURIComponent(
-        window
-            .atob(base64)
-            .split('')
-            .map(function (c) {
-                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
-            })
-            .join(''),
-    )
-    console.log("from parseJwt : ", JSON.parse(jsonPayload))
-    return JSON.parse(jsonPayload)
-}
+    parseJwt(token: string): { exp: number } {
+        var base64Url = token.split('.')[1]
+        var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/')
+        var jsonPayload = decodeURIComponent(
+            window
+                .atob(base64)
+                .split('')
+                .map(function (c) {
+                    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+                })
+                .join(''),
+        )
+        return JSON.parse(jsonPayload)
+    }
 
     public isTokenExpired(token: string | null): boolean {
         if (token) {

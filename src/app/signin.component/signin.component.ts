@@ -3,10 +3,11 @@ import { FormBuilder, FormGroup, FormsModule, NgForm, ReactiveFormsModule, Valid
 import { TokenService } from '../../services/token.service';
 import { catchError, tap } from 'rxjs';
 import { Router } from '@angular/router';
+import { AuthLayoutComponent } from "../auth-layout-component/auth-layout-component";
 
 @Component({
   selector: 'app-signin.component',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, AuthLayoutComponent],
   templateUrl: './signin.component.html',
   styleUrl: './signin.component.css',
 })

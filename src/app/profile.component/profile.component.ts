@@ -1,8 +1,8 @@
 import { Component, inject, OnInit, Signal, signal } from '@angular/core';
 import { TokenService } from '../../services/token.service';
-import { UserDto } from '../dto/user.dto';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
+import { LayoutComponent } from "../layout.component/layout.component";
 
 @Component({
   selector: 'app-profile.component',
