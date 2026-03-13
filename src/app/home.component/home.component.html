@@ -1,4 +1,4 @@
-  <div class="w-full flex flex-col items-center p-2">
+  <div class="w-full flex flex-col items-center p-2 gap-4">
     @if (mapService.communeSaved()) {
       <div class="p-4 w-full flex flex-col items-center gap-4">
         <h1 class="text-xl font-bold">{{ mapService.communeSaved()?.nom }}</h1>
@@ -7,6 +7,18 @@
         } @else {
           <p>La données est présente dans le DataLake</p>
         }
+      </div>
+    } @else {
+      <div>
+        <h1 class="text-xl font-bold">Aucune commune sélectionnée</h1>
+        <p>Veuillez sélectionner une commune pour afficher les données foncières</p>
+      </div>
+    }
+    @if (mapService.isCommune() && mapService.communeSaved()?.code !== mapService.isCommune()?.code) {
+      <div class="flex flex-col items-center gap-2 border-y border-neutral-200 p-4">
+        <p class="text-sm">Communes dont les données sont disponibles</p>
+        <h2>{{ mapService.isCommune()!.nom }}</h2>
+        <button class="btn btn-xs btn-primary" (click)="changeCommune()">Choisir cette commune</button>
       </div>
     }
   </div>

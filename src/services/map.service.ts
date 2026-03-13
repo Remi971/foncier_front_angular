@@ -6,9 +6,10 @@ import { CommuneAppDto, CommuneDto } from "../app/dto/commune.dto";
 })
 export class MapService {
    private action = signal<string>('');
-   private isEnveloppe = signal<boolean>(false)
-   isCommune = signal<string | null>(null)
+   isEnveloppe = signal<boolean>(false)
+   isCommune = signal<CommuneAppDto | null>(null)
    communeSaved = signal<CommuneAppDto | null>(null)
+   processing = signal<boolean>(false)
 
     requestAction(action: string): void{
         this.action.set(action);
@@ -20,9 +21,5 @@ export class MapService {
 
     requestEnveloppe(presence: boolean): void {
         this.isEnveloppe.set(presence);
-    }
-
-    getEnveloppe(): boolean {
-        return this.isEnveloppe();
     }
 }

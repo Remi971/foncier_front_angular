@@ -24,17 +24,18 @@ export class HomeComponent {
   communeNameDebounced = signal<string>("");
 
   constructor(){
-    this.cartoApiService.getCommune().pipe(
-      tap((response: CommuneDto) => {
-        if (response) {
-          const dataResponse = {...response, data: true}
-          this.mapService.communeSaved.set(dataResponse)
-          this.mapService.isCommune.set(dataResponse.nom)
-          // this.mapService.requestAction(MapAction.FLY_TO)
-        }
-      })
-    ).subscribe()
-  
+    if (!this.mapService.communeSaved()) {
+      this.cartoApiService.getCommune().pipe(
+        tap((response: CommuneDto) => {
+          if (response) {
+            const dataResponse = {...response, data: true}
+            this.mapService.communeSaved.set(dataResponse)
+            this.mapService.isCommune.set(dataResponse)
+            // this.mapService.requestAction(MapAction.FLY_TO)
+          }
+        })
+      ).subscribe()
+    }
   }
   downloadDataCommune(): void {
     const body : ProcessSchemaDto = {
@@ -42,10 +43,16 @@ export class HomeComponent {
       parameters: this.mapService.communeSaved()!
     }
     this.cartoApiService.orchestrate(body).pipe(
+      tap(() => this.mapService.processing.set(true)),
       catchError((err) => {
         console.log(err)
+        this.mapService.processing.set(false);
         throw err
       })
     ).subscribe()
+  }
+
+  changeCommune(): void {
+    this.mapService.communeSaved.set(this.mapService.isCommune())
   }
 }
