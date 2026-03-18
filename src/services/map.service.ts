@@ -1,12 +1,13 @@
 import { Injectable, signal } from "@angular/core";
 import { CommuneAppDto, CommuneDto } from "../app/dto/commune.dto";
+import { EnveloppeDto, EnveloppeInfoDto } from "../app/dto/enveloppe.dto";
 
 @Injectable({
     providedIn: 'root'
 })
 export class MapService {
    private action = signal<string>('');
-   isEnveloppe = signal<boolean>(false)
+   isEnveloppe = signal<EnveloppeInfoDto | null>(null)
    isCommune = signal<CommuneAppDto | null>(null)
    communeSaved = signal<CommuneAppDto | null>(null)
    processing = signal<boolean>(false)
@@ -19,7 +20,4 @@ export class MapService {
         return this.action();
     }
 
-    requestEnveloppe(presence: boolean): void {
-        this.isEnveloppe.set(presence);
-    }
 }

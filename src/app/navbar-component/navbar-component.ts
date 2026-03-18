@@ -54,6 +54,10 @@ export class NavbarComponent  {
     const { _score, ...rest } = commune
     this.mapService.communeSaved.set({...rest, data: false});
     this.mapService.requestAction(MapAction.FLY_TO);
+    if(this.mapService.isEnveloppe()) {
+      this.mapService.isEnveloppe.set(null);
+      this.mapService.requestAction(MapAction.REMOVE_ENVELOPPE)
+    }
     this.communeInput = "";
     this.communeList = [];
     // Display 'Obtenir data Button'

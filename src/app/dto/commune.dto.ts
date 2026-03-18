@@ -1,6 +1,9 @@
-export type CommuneDto = {
+export type Commune = {
     nom: string
     code: string
+}
+
+export type CommuneDto = Commune & {
     centre: {
         type: string,
         coordinates: number[]

@@ -9,7 +9,7 @@ import { TokenService } from '../../services/token.service';
 import { Router } from '@angular/router';
 import { MapService } from '../../services/map.service';
 import { MapAction } from '../dto/mapAction.enum';
-import { EnveloppeDto } from '../dto/enveloppe.dto';
+import { EnveloppeDto, EnveloppeInfoDto } from '../dto/enveloppe.dto';
 import { DataFormatDto } from '../dto/dataFormat.dto';
 import * as turf from '@turf/turf'
 @Component({
@@ -30,15 +30,43 @@ export class MapComponent implements OnInit {
   gmOptions: GmOptionsPartial = {
     controls: {
       draw: {
-        polygon: {
-          title: 'Draw a polygon',
-          active: true
-        },
         rectangle: {
-          active: false
+          active: false,
+          uiEnabled: false
+        },
+        line :{
+          active: false,
+          uiEnabled: false
         },
         circle: {
-          active: false
+          active: false,
+          uiEnabled: false
+        },
+        circle_marker: {
+          active: false,
+          uiEnabled: false
+        },
+        marker: {
+          active: false,
+          uiEnabled: false
+        },
+        text_marker: {
+          active: false,
+          uiEnabled: false
+        },
+        ellipse: {
+          active: false,
+          uiEnabled: false
+        }
+      }, 
+      edit: {
+        drag: {
+          active: false,
+          uiEnabled: false
+        },
+        rotate: {
+          active: false,
+          uiEnabled: false
         }
       }
     }
@@ -172,38 +200,41 @@ export class MapComponent implements OnInit {
       })
       return;
     }
-    this.cartoApi.getEnveloppe().pipe(
-      tap((data) => {
-        if (data) {
-          console.log("Adding source enveloppe to map", data)
-          this.mapService.requestEnveloppe(true)
-          this.enveloppe = data.data.features[0];
-          this.map!.addSource('enveloppe', {
-            type: 'geojson',
-            data: data.data.features[0],
-          })
-          this.map!.addLayer({
-            id: "enveloppe",
-            type: 'line',
-            source: 'enveloppe',
-            paint: {
-              'line-color': 'red',
-              'line-width': 2
-            }
-          })
-          const center = turf.centroid(data.data.features[0]).geometry.coordinates
-          this.map!.flyTo({
-            center: [center[0], center[1]], //[4.9010, 44.1169], // starting position [lng, lat]
-            zoom: 12,
-            curve: 1,
-            speed: 1,
-            essential: true
-          })
-        } else {
-          this.mapService.requestAction(MapAction.NO_PROCESS_DATA)
-          this.mapService.requestEnveloppe(false)
-        }
-      })).subscribe()
+    if (this.mapService.communeSaved()) {
+      this.cartoApi.getEnveloppe(this.mapService.communeSaved()!.code).pipe(
+        tap((data) => {
+          if (data) {
+            console.log("Adding source enveloppe to map", data)
+            this.mapService.isEnveloppe.set(data.info as EnveloppeInfoDto)
+            this.enveloppe = data.data.features[0];
+            // store the enveloppe info in this.mapService.isEnveloppe
+            this.map!.addSource('enveloppe', {
+              type: 'geojson',
+              data: data.data.features[0],
+            })
+            this.map!.addLayer({
+              id: "enveloppe",
+              type: 'line',
+              source: 'enveloppe',
+              paint: {
+                'line-color': 'red',
+                'line-width': 2
+              }
+            })
+            const center = turf.centroid(data.data.features[0]).geometry.coordinates
+            this.map!.flyTo({
+              center: [center[0], center[1]], //[4.9010, 44.1169], // starting position [lng, lat]
+              zoom: 12,
+              curve: 1,
+              speed: 1,
+              essential: true
+            })
+          } else {
+            this.mapService.requestAction(MapAction.NO_PROCESS_DATA)
+            this.mapService.isEnveloppe.set(null)
+          }
+        })).subscribe()
+    }
   }
 
   editEnveloppe(): void {
@@ -211,18 +242,19 @@ export class MapComponent implements OnInit {
     this.map?.on("gm:loaded", () => {
       console.log("Geoman loaded, adding controls")
       this.geoman!.features.importGeoJson(this.enveloppe as GeoJsonImportFeature)
-      this.geoman!.options.disableMode('edit', 'polygon');
+      // this.geoman!.options.disableMode('edit', 'polygon');
     })
   }
 
   saveEnveloppe(): void {
     const newEnveloppe = this.geoman?.features.exportGeoJson();
-    this.removeEnveloppeFromMap();
-    const newEnveloppeData : DataFormatDto = {
-      type: "enveloppe",
-      data: JSON.stringify(newEnveloppe!),
-    }
-    this.cartoApi.saveEnveloppe(newEnveloppeData).subscribe(
+    this.cancelEditEnveloppe();
+    // const newEnveloppeData : DataFormatDto = {
+    //   type: "enveloppe",
+    //   data: JSON.stringify(newEnveloppe!),
+    // }
+    const data = JSON.stringify(newEnveloppe!);
+    this.cartoApi.saveEnveloppe(data).subscribe(
       (response) => {
         this.map!.addSource('enveloppe', {
           type: 'geojson',
@@ -244,6 +276,7 @@ export class MapComponent implements OnInit {
   }
 
   cancelEditEnveloppe(): void {
+    this.geoman?.features.deleteAll();
     this.geoman?.destroy();
     this.geoman = null;
     this.removeEnveloppeFromMap();

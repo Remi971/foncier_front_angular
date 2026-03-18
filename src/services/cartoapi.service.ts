@@ -6,7 +6,6 @@ import { EnveloppeDto } from "../app/dto/enveloppe.dto";
 import { UserDto, UserInfoDto } from "../app/dto/user.dto";
 import { DataFormatDto } from "../app/dto/dataFormat.dto";
 import { ProcessSchemaDto } from "../app/dto/process.dto";
-import { CommuneInfoDto } from "../app/dto/communeInfo.dtp";
 import { CommuneDto } from "../app/dto/commune.dto";
 
 @Injectable({
@@ -23,8 +22,8 @@ export class CartoApiService {
         return this.http.get<CommuneDto>(environment.apiUrl + '/data/commune');
     }
 
-    getEnveloppe(): Observable<EnveloppeDto> {
-        return this.http.get<EnveloppeDto>(environment.apiUrl + '/data/enveloppe');
+    getEnveloppe(code: string): Observable<EnveloppeDto> {
+        return this.http.get<EnveloppeDto>(environment.apiUrl + `/data/enveloppe/${code}`);
     }
 
     getPotential(): Observable<Object> {
@@ -35,10 +34,8 @@ export class CartoApiService {
         return this.http.get<UserInfoDto>(environment.apiUrl + '/users/me')
     }
 
-    saveEnveloppe(enveloppe: DataFormatDto): Observable<EnveloppeDto> {
-        // const body = JSON.stringify(enveloppe);
-        console.log("enveloppe : ", enveloppe)
-        return this.http.post<EnveloppeDto>(environment.apiUrl + '/data/enveloppe', enveloppe, {headers: { "Content-Type": "application/json" }})
+    saveEnveloppe(enveloppe: string): Observable<GeoJSON.FeatureCollection> {
+        return this.http.post<GeoJSON.FeatureCollection>(environment.apiUrl + '/data/save/enveloppe', enveloppe, {headers: { "Content-Type": "application/json" }})
     }
 
 }

@@ -7,6 +7,15 @@ export enum ProcessType {
     ENVELOPPE_GENERATION = "ENVELOPPE_GENERATION"
 }
 
+export enum ProcessStatus {
+    STARTED = "STARTED",
+    PENDING = "PENDING",
+    IN_PROGRESS = "IN_PROGRESS",
+    COMPLETED = "COMPLETED",
+    FAILED = "FAILED",
+    ERROR = "ERROR"
+}
+
 export interface CommuneProcess {
     code_insee: string
     nom: string

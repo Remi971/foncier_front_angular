@@ -1,1 +1,249 @@
-<p>potentiel.component works!</p>
+<div class="flex flex-col items-center gap-2 p-2 w-full">
+  @if (mapService.communeSaved()) {
+    <h1 class="text-center font-bold text-xl p-2">{{ mapService.communeSaved()?.nom }}</h1>
+    <hr class="w-full" />
+    <button class="btn" onclick="my_modal.showModal()">Calcul</button>
+      <dialog id="my_modal" class="modal">
+        <div class="modal-box relative">
+          <h3 class="text-lg font-bold">Paramètres de calcul de l'enveloppe</h3>
+          <div class="modal-action flex flex-col">
+            <form method="dialog">
+              <button id="closeModal" class="btn-xs btn absolute top-4 right-4">X</button>
+              <!-- if there is a button in form, it will close the modal -->
+              <form class="py-4" [formGroup]="potentielForm">
+                <!--  minSurfBati -->
+                <div class="flex flex-col gap-2">
+                  <div>
+                    <label class="text-md" for="minSurfBati">Surface bâti minimale:</label>
+                    <button
+                      class="px-2 font-bold hover:underline cursor-pointer"
+                      onclick="my_modal_1.showModal()"
+                    >
+                      ?
+                    </button>
+                    <dialog id="my_modal_1" class="modal">
+                      <div class="modal-box">
+                        <h3 class="text-lg font-bold">Surface bâti minimale</h3>
+                        <p class="py-4">Explication / Illustration</p>
+                      </div>
+                      <form method="dialog" class="modal-backdrop">
+                        <button>close</button>
+                      </form>
+                    </dialog>
+                  </div>
+                  <input
+                    class="input input-sm w-[50%]"
+                    id="minSurfBati"
+                    type="number"
+                    formControlName="minSurfBati"
+                  />
+                </div>
+                <!-- buffer Bati -->
+                <div class="flex flex-col gap-2">
+                  <div>
+                    <label class="text-md" for="bufferBati">Buffer autour du bâti:</label>
+                    <button
+                      class="px-2 font-bold hover:underline cursor-pointer"
+                      onclick="my_modal_2.showModal()"
+                    >
+                      ?
+                    </button>
+                    <dialog id="my_modal_2" class="modal">
+                      <div class="modal-box">
+                        <h3 class="text-lg font-bold">Buffer autour du bâti</h3>
+                        <p class="py-4">Explication / Illustration</p>
+                      </div>
+                      <form method="dialog" class="modal-backdrop">
+                        <button>close</button>
+                      </form>
+                    </dialog>
+                  </div>
+                  <input
+                    class="input input-sm w-[50%]"
+                    id="bufferBati"
+                    type="number"
+                    formControlName="bufferBati"
+                  />
+                </div>
+                <!-- dilatation -->
+                <div class="flex flex-col gap-2">
+                  <div>
+                    <div>
+                      <label class="text-md" for="dilatation"
+                        >Distance Buffer pour la dilatation:</label
+                      >
+                      <button
+                        class="px-2 font-bold hover:underline cursor-pointer"
+                        onclick="my_modal_3.showModal()"
+                      >
+                        ?
+                      </button>
+                      <dialog id="my_modal_3" class="modal">
+                        <div class="modal-box">
+                          <h3 class="text-lg font-bold">Distance Buffer pour la dilatation</h3>
+                          <p class="py-4">Explication / Illustration</p>
+                        </div>
+                        <form method="dialog" class="modal-backdrop">
+                          <button>close</button>
+                        </form>
+                      </dialog>
+                    </div>
+                  </div>
+                  <input
+                    class="input input-sm w-[50%]"
+                    id="dilatation"
+                    type="number"
+                    formControlName="dilatation"
+                  />
+                </div>
+                <!-- erosion -->
+                <div class="flex flex-col gap-2">
+                  <div>
+                    <label class="text-md" for="erosion">Distance buffer pour l'érosion:</label>
+                    <button
+                      class="px-2 font-bold hover:underline cursor-pointer"
+                      onclick="my_modal_5.showModal()"
+                    >
+                      ?
+                    </button>
+                    <dialog id="my_modal_5" class="modal">
+                      <div class="modal-box">
+                        <h3 class="text-lg font-bold">Distance buffer pour l'érosion</h3>
+                        <p class="py-4">Explication / Illustration</p>
+                      </div>
+                      <form method="dialog" class="modal-backdrop">
+                        <button>close</button>
+                      </form>
+                    </dialog>
+                  </div>
+                  <input
+                    class="input input-sm w-[50%]"
+                    id="erosion"
+                    type="number"
+                    formControlName="erosion"
+                  />
+                </div>
+                <!-- minPartInBuffer -->
+                <div class="flex flex-col gap-2">
+                  <div>
+                    <label class="text-md" for="minPartInBuffer"
+                      >Part minimale de la parcelle comprise dans le buffer dilation-erosion:</label
+                    >
+                    <button
+                      class="px-2 font-bold hover:underline cursor-pointer"
+                      onclick="my_modal_6.showModal()"
+                    >
+                      ?
+                    </button>
+                    <dialog id="my_modal_6" class="modal">
+                      <div class="modal-box">
+                        <h3 class="text-lg font-bold">
+                          Part minimale de la parcelle comprise dans le buffer dilation-erosion
+                        </h3>
+                        <p class="py-4">Explication / Illustration</p>
+                      </div>
+                      <form method="dialog" class="modal-backdrop">
+                        <button>close</button>
+                      </form>
+                    </dialog>
+                  </div>
+                  <input
+                    class="input input-sm w-[50%]"
+                    id="minPartInBuffer"
+                    type="number"
+                    formControlName="minPartInBuffer"
+                  />
+                </div>
+                <!-- maxSurfTrou -->
+                <div class="flex flex-col gap-2">
+                  <div>
+                    <label class="text-md" for="maxSurfTrou"
+                      >Surface maximale des trous à combler:</label
+                    >
+                    <button
+                      class="px-2 font-bold hover:underline cursor-pointer"
+                      onclick="my_modal_7.showModal()"
+                    >
+                      ?
+                    </button>
+                    <dialog id="my_modal_7" class="modal">
+                      <div class="modal-box">
+                        <h3 class="text-lg font-bold">Surface maximale des trous à combler</h3>
+                        <p class="py-4">Explication / Illustration</p>
+                      </div>
+                      <form method="dialog" class="modal-backdrop">
+                        <button>close</button>
+                      </form>
+                    </dialog>
+                  </div>
+                  <input
+                    class="input input-sm w-[50%]"
+                    id="maxSurfTrou"
+                    type="number"
+                    formControlName="maxSurfTrou"
+                  />
+                </div>
+                <!-- minSurfEnv -->
+                <div class="flex flex-col gap-2">
+                  <div>
+                    <label class="text-md" for="minSurfEnv">Surface minimale des enveloppes:</label>
+                    <button
+                      class="px-2 font-bold hover:underline cursor-pointer"
+                      onclick="my_modal_8.showModal()"
+                    >
+                      ?
+                    </button>
+                    <dialog id="my_modal_8" class="modal">
+                      <div class="modal-box">
+                        <h3 class="text-lg font-bold">Surface minimale des enveloppes</h3>
+                        <p class="py-4">Explication / Illustration</p>
+                      </div>
+                      <form method="dialog" class="modal-backdrop">
+                        <button>close</button>
+                      </form>
+                    </dialog>
+                  </div>
+                  <input
+                    class="input input-sm w-[50%]"
+                    id="minSurfEnv"
+                    type="number"
+                    formControlName="minSurfEnv"
+                  />
+                </div>
+                 <!-- maxSurfResidus -->
+                <div class="flex flex-col gap-2">
+                  <div>
+                    <label class="text-md" for="maxSurfResidus">Surface maximale des residus:</label>
+                    <button
+                      class="px-2 font-bold hover:underline cursor-pointer"
+                      onclick="my_modal_8.showModal()"
+                    >
+                      ?
+                    </button>
+                    <dialog id="my_modal_8" class="modal">
+                      <div class="modal-box">
+                        <h3 class="text-lg font-bold">Surface maximale des residus</h3>
+                        <p class="py-4">Explication / Illustration</p>
+                      </div>
+                      <form method="dialog" class="modal-backdrop">
+                        <button>close</button>
+                      </form>
+                    </dialog>
+                  </div>
+                  <input
+                    class="input input-sm w-[50%]"
+                    id="maxSurfResidus"
+                    type="number"
+                    formControlName="maxSurfResidus"
+                  />
+                </div>
+              </form>
+            </form>
+            <button class="btn" >Calculer le potentiel</button>
+          </div>
+        </div>
+      </dialog>
+  } @else {
+    <p>Choisir une commune</p>
+  }
+</div>

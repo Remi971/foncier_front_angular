@@ -1,0 +1,18 @@
+.animate-fill {
+  position: absolute;
+  animation: fill 3s ease-out;
+  height: 5px;
+  left: 0;
+  bottom: 0;
+  opacity: 0.5;
+  background-color: currentColor;
+}
+
+@keyframes fill {
+  0% {
+    width: 0%;
+  }
+  100% {
+    width: 100%;
+  }
+}

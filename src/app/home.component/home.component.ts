@@ -36,6 +36,12 @@ export class HomeComponent {
         })
       ).subscribe()
     }
+
+    effect(() => {
+      if (this.mapService.isEnveloppe() && this.mapService.communeSaved()?.code != this.mapService.isEnveloppe()?.code) {
+        this.mapService.requestAction(MapAction.REMOVE_ENVELOPPE)
+      }
+    })
   }
   downloadDataCommune(): void {
     const body : ProcessSchemaDto = {
